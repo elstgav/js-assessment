@@ -3,24 +3,23 @@ if (typeof define !== 'function') { var define = require('amdefine')(module); }
 define([ 'jquery' ], function($) {
 	return {
 		async : function(value) {
-			var def = $.Deferred();
-			def.resolve(value);
-			return def.promise();
+			var dfd = $.Deferred();
+			dfd.resolve(value);
+			return dfd.promise();
 		},
 
 		manipulateRemoteData : function(url) {
-			var def = $.Deferred(),
-				people = [];
+			var dfd = $.Deferred();
 
 			$.get(url, function(data, textStatus, jqXHR){
-				for (var person in data.people) {
-					people.push(data.people[person].name);
-				}
-				people.sort();
-				def.resolve(people);
+				var people = $.map(data.people, function(person){
+					return person.name;
+				});
+
+				dfd.resolve(people.sort());
 			});
 
-			return def.promise();
+			return dfd.promise();
 		}
 	};
 });
